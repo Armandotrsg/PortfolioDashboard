@@ -12,6 +12,7 @@ export const Navbar = () => {
     { href: "/projects", label: "Projects" },
     { href: "/social-service", label: "Social Service" },
     { href: "/awards", label: "Awards" },
+    { href: "/about-me", label: "About Me" },
   ];
   const ToggleButton = () => (
     <button
@@ -56,7 +57,7 @@ export const Navbar = () => {
     </li>
   );
   return (
-    <nav className="bg-primary-950">
+    <nav className="bg-midnight-950">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Logo />
         <ToggleButton />

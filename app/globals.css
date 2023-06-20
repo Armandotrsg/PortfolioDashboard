@@ -2,3 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    body {
+        @apply bg-primary-950/90;
+    }
+    * {
+        @apply border-2;
+    }
+}
