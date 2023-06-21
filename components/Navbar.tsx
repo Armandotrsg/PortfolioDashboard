@@ -2,6 +2,7 @@
 import { Logo } from "./Logo";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export const Navbar = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
@@ -47,13 +48,13 @@ export const Navbar = () => {
     children: React.ReactNode;
   }) => (
     <li>
-      <a
+      <Link
         href={href}
         className={`block py-2 pl-3 pr-4 rounded bg-transparent text-secondary-100 hover:bg-secondary-800 md:hover:bg-transparent md:hover:text-secondary-300 duration-300 md:p-0 ${pathname === href ? "md:text-primary-400 hover:bg-primary-500 md:hover:text-primary-500 md:hover:bg-transparent" : ""}`}
         aria-current="page"
       >
         {children}
-      </a>
+      </Link>
     </li>
   );
   return (
