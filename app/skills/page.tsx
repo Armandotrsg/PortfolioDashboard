@@ -48,16 +48,16 @@ export default function ImageUpload() {
         </div>
         <div className="col-span-12 md:col-span-6">
           {/* Input section */}
-          <div className="border-2 border-red-500 h-full">
+          <div className="h-full">
             <div className="grid grid-rows-5 h-full">
               {/* Image preview */}
               <div className="row-span-2 max-h-full">
-                <div className="flex flex-col md:flex-row space-x-3 justify-center items-center h-full p-5">
+                <div className="flex flex-col md:flex-row space-x-3 justify-center items-center h-[90%] p-5 mt-5 border-2 border-dashed">
                   {image ? (
                     <ImagePreview image={image} imageName={imageName} handleRemove={handleRemoveImage} />
                   ) : (
                     <p className="text-center text-white p-3 italic">
-                      No image selected
+                      Image Preview
                     </p>
                   )}
                 </div>

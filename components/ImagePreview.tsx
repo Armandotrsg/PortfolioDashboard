@@ -24,7 +24,7 @@ export const ImagePreview = ({ image, imageName, handleRemove }) => {
       <Image
         src={URL.createObjectURL(image)}
         alt="preview"
-        className="object-cover rounded-lg shadow-lg w-fit h-52"
+        className="object-cover rounded-lg shadow-lg w-fit h-28"
         width={100}
         height={100}
       />

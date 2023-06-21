@@ -35,7 +35,7 @@ export const DropImage = ({
         multiple={false}
       >
         <div
-          className={`w-96 h-96 rounded-xl flex flex-col justify-center items-center border-[6px] border-dotted border-indigo-50 cursor-pointer`}
+          className={`w-96 h-96 rounded-xl flex flex-col justify-center items-center border-[6px] border-dashed border-indigo-50 cursor-pointer`}
         >
           <DownloadImage />
           <p className="text-white">Drag and drop your file here</p>
