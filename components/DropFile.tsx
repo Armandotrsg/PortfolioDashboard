@@ -38,7 +38,7 @@ export const DropFile = ({
         multiple={false}
       >
         <div
-          className={`w-96 h-96 rounded-xl flex flex-col justify-center items-center border-[6px] border-dashed border-indigo-50 cursor-pointer`}
+          className={`p-5 md:w-96 md:h-96 rounded-xl flex flex-col justify-center items-center border-[6px] border-dashed border-indigo-50 cursor-pointer`}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
@@ -54,11 +54,11 @@ export const DropFile = ({
             />
           )}
           {!file ? (
-            <p className={`text-white ${file && "pt-3"}`}>
+            <p className={`text-white text-center`}>
               Drag and drop your file here
             </p>
           ) : (
-            <p className="text-white pt-3">
+            <p className="text-white text-center pt-3">
               {isHovering ? "Click to change file" : "File uploaded!"}
             </p>
           )}

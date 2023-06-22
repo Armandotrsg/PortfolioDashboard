@@ -44,7 +44,7 @@ export default function ImageUpload() {
             <div className="grid grid-rows-5 h-full">
               {/* Image preview */}
               <div className="row-span-1 h-full p-3 mt-5">
-                <div className="flex flex-col md:flex-row h-full items-center">
+                <div className="flex h-full items-center">
                   <label className="text-white font-semibold">*Image: &nbsp;</label>
                   {image && imageName ? (
                     <FilePreview
@@ -66,7 +66,7 @@ export default function ImageUpload() {
                   handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setTitle(e.target.value)
                   }
-                  placeholder={"Title of the project"}
+                  placeholder={"Project title"}
                   required={true}
                 />
               </div>
@@ -98,9 +98,14 @@ export default function ImageUpload() {
               </div>
               <div className="row-span-1 p-3">
                 <div className="flex flex-col space-y-1">
-                  <label className="text-white font-semibold">
-                    *Dates
-                  </label>
+                  <div className="flex">
+                    <label className="text-white font-semibold w-1/2">
+                      *Start date
+                    </label>
+                    <label className="text-white font-semibold w-1/2">
+                      *End Date
+                    </label>
+                  </div>
                   <div className="flex space-x-2">
                     <input
                       type="date"
