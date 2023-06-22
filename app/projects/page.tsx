@@ -4,6 +4,8 @@ import { DropFile } from "@/components/DropFile";
 import { resizeImage } from "@/utils/ResizeImage";
 import { FilePreview } from "@/components/FilePreview";
 import { Input } from "@/components/Input";
+import { storage } from "@/firebaseConfig";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 
 export default function ImageUpload() {
   const fileTypes = ["JPG", "PNG", "JPEG"];
@@ -27,16 +29,34 @@ export default function ImageUpload() {
       setImage(blob);
     });
   };
+
+  async function uploadImage() {
+    if (image) {
+      const storageRef = ref(storage, `projects/${imageName}`);
+      const snapshot = await uploadBytes(storageRef, image);
+      console.log("Uploaded a blob or file!", snapshot);
+      //Obtener la url de la imagen
+      const url = await getDownloadURL(snapshot.ref);
+      console.log(url);
+    }
+  }
+
   return (
     <section>
-      <h1 className="text-4xl font-bold text-center text-white p-5">Projects</h1>
+      <h1 className="text-4xl font-bold text-center text-white p-5">
+        Projects
+      </h1>
       <h2 className="text-2xl font-bold text-center text-white">
         Add a new project
       </h2>
       <form className="grid grid-cols-12">
         <div className="col-span-12 md:col-span-6">
           {/* Image placeholder */}
-          <DropFile fileTypes={fileTypes} handleChange={handleImageChange} file={image} />
+          <DropFile
+            fileTypes={fileTypes}
+            handleChange={handleImageChange}
+            file={image}
+          />
         </div>
         <div className="col-span-12 md:col-span-6">
           {/* Input section */}
@@ -45,7 +65,9 @@ export default function ImageUpload() {
               {/* Image preview */}
               <div className="row-span-1 h-full p-3 mt-5">
                 <div className="flex h-full items-center">
-                  <label className="text-white font-semibold">*Image: &nbsp;</label>
+                  <label className="text-white font-semibold">
+                    *Image: &nbsp;
+                  </label>
                   {image && imageName ? (
                     <FilePreview
                       fileName={imageName}
@@ -131,6 +153,20 @@ export default function ImageUpload() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="col-span-12">
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
+              onClick={async (e) => {
+                e.preventDefault();
+                await uploadImage();
+              }}
+            >
+              Submit
+            </button>
           </div>
         </div>
       </form>
