@@ -22,7 +22,7 @@ export const Input = ({
   return (
     <div className="flex flex-col space-y-1">
       <label htmlFor={name} className="text-white font-semibold">
-        {label}
+        {`${required && "*"}${label}:`}
       </label>
       <input
         type={type}

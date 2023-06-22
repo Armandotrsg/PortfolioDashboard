@@ -43,7 +43,7 @@ export default function ImageUpload() {
               {/* Image preview */}
               <div className="row-span-1 h-full p-3 mt-5">
                 <div className="flex flex-col md:flex-row h-full items-center">
-                  <label className="text-white font-semibold">Image: &nbsp;</label>
+                  <label className="text-white font-semibold">*Image: &nbsp;</label>
                   {image && imageName ? (
                     <FilePreview
                       fileName={imageName}
