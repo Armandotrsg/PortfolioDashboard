@@ -11,6 +11,8 @@ export default function ImageUpload() {
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [image, setImage] = useState<Blob | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
 
@@ -27,9 +29,9 @@ export default function ImageUpload() {
   };
   return (
     <section>
-      <h1 className="text-4xl font-bold text-center text-white p-5">Skills</h1>
+      <h1 className="text-4xl font-bold text-center text-white p-5">Projects</h1>
       <h2 className="text-2xl font-bold text-center text-white">
-        Add a new skill
+        Add a new project
       </h2>
       <form className="grid grid-cols-12">
         <div className="col-span-12 md:col-span-6">
@@ -39,7 +41,7 @@ export default function ImageUpload() {
         <div className="col-span-12 md:col-span-6">
           {/* Input section */}
           <div className="h-full">
-            <div className="grid grid-rows-4 h-full">
+            <div className="grid grid-rows-5 h-full">
               {/* Image preview */}
               <div className="row-span-1 h-full p-3 mt-5">
                 <div className="flex flex-col md:flex-row h-full items-center">
@@ -64,20 +66,20 @@ export default function ImageUpload() {
                   handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setTitle(e.target.value)
                   }
-                  placeholder={"Title"}
+                  placeholder={"Title of the project"}
                   required={true}
                 />
               </div>
               <div className="row-span-1 p-3">
                 <Input
                   label={"Link"}
-                  type={"text"}
+                  type={"url"}
                   name={"link"}
                   value={link}
                   handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setLink(e.target.value)
                   }
-                  placeholder={"Link"}
+                  placeholder={"https://example.com"}
                   required={true}
                 />
               </div>
@@ -90,9 +92,38 @@ export default function ImageUpload() {
                   handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setDescription(e.target.value)
                   }
-                  placeholder={"Description"}
+                  placeholder={"A brief description of the project"}
                   required={true}
                 />
+              </div>
+              <div className="row-span-1 p-3">
+                <div className="flex flex-col space-y-1">
+                  <label className="text-white font-semibold">
+                    *Dates
+                  </label>
+                  <div className="flex space-x-2">
+                    <input
+                      type="date"
+                      name="start"
+                      id="start"
+                      className="w-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
+                      required
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setStartDate(e.target.value);
+                      }}
+                    />
+                    <input
+                      type="date"
+                      name="end"
+                      id="end"
+                      className="w-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
+                      required
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setEndDate(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
