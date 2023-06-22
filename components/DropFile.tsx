@@ -4,11 +4,9 @@ import { FileUploader } from "react-drag-drop-files";
 export const DropImage = ({
   fileTypes,
   handleChange,
-  handleRemove,
-}: {
+} : {
   fileTypes: String[];
-  handleChange: any;
-  handleRemove: any;
+  handleChange: (file: File) => void;
 }) => {
   const DownloadImage = () => (
     <svg

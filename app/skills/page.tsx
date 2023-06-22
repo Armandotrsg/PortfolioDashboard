@@ -12,25 +12,19 @@ export default function ImageUpload() {
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<Blob | null>(null);
-  const [imageName, setImageName] = useState<String | null>(null);
+  const [imageName, setImageName] = useState<string | null>(null);
 
   const handleRemoveImage = () => {
     setImageName(null);
     setImage(null);
-  }
+  };
 
-  const handleImageChange = (file) => {
+  const handleImageChange = (file: File) => {
     setImageName(file.name);
-    resizeImage(file, 519, 380).then((blob) => {
+    resizeImage(file, 519, 380).then((blob: Blob) => {
       setImage(blob);
-    })
+    });
   };
-
-  const removeImage = (e) => {
-    e.preventDefault();
-    setImage(null);
-  };
-
   return (
     <section>
       <h1 className="text-4xl font-bold text-center text-white p-5">Skills</h1>
@@ -40,11 +34,7 @@ export default function ImageUpload() {
       <form className="grid grid-cols-12">
         <div className="col-span-12 md:col-span-6">
           {/* Image placeholder */}
-          <DropImage
-            fileTypes={fileTypes}
-            handleChange={handleImageChange}
-            handleRemove={removeImage}
-          />
+          <DropImage fileTypes={fileTypes} handleChange={handleImageChange} />
         </div>
         <div className="col-span-12 md:col-span-6">
           {/* Input section */}
@@ -54,7 +44,11 @@ export default function ImageUpload() {
               <div className="row-span-2 max-h-full">
                 <div className="flex flex-col md:flex-row space-x-3 justify-center items-center h-[90%] p-5 mt-5 border-2 border-dashed">
                   {image ? (
-                    <ImagePreview image={image} imageName={imageName} handleRemove={handleRemoveImage} />
+                    <ImagePreview
+                      image={image as Blob}
+                      imageName={imageName as string}
+                      handleRemove={handleRemoveImage}
+                    />
                   ) : (
                     <p className="text-center text-white p-3 italic">
                       Image Preview
@@ -64,13 +58,43 @@ export default function ImageUpload() {
               </div>
               {/* Input fields */}
               <div className="row-span-1 p-3">
-                <Input label={"Title"} type={"text"} name={"title"} value={title} handleChange={(e) => setTitle(e.target.value)} placeholder={"Title"} required={true} />
+                <Input
+                  label={"Title"}
+                  type={"text"}
+                  name={"title"}
+                  value={title}
+                  handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setTitle(e.target.value)
+                  }
+                  placeholder={"Title"}
+                  required={true}
+                />
               </div>
               <div className="row-span-1 p-3">
-                <Input label={"Link"} type={"text"} name={"link"} value={link} handleChange={(e) => setLink(e.target.value)} placeholder={"Link"} required={true} />
+                <Input
+                  label={"Link"}
+                  type={"text"}
+                  name={"link"}
+                  value={link}
+                  handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setLink(e.target.value)
+                  }
+                  placeholder={"Link"}
+                  required={true}
+                />
               </div>
               <div className="row-span-1 p-3">
-                <Input label={"Description"} type={"text"} name={"description"} value={description} handleChange={(e) => setDescription(e.target.value)} placeholder={"Description"} required={true} />
+                <Input
+                  label={"Description"}
+                  type={"text"}
+                  name={"description"}
+                  value={description}
+                  handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setDescription(e.target.value)
+                  }
+                  placeholder={"Description"}
+                  required={true}
+                />
               </div>
             </div>
           </div>

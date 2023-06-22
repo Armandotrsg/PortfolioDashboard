@@ -1,6 +1,12 @@
 import Image from "next/image";
 
-export const ImagePreview = ({ image, imageName, handleRemove }) => {
+interface ImagePreviewProps {
+  image: Blob;
+  imageName: string;
+  handleRemove: () => void;
+}
+
+export const ImagePreview = ({ image, imageName, handleRemove }: ImagePreviewProps) => {
   const CloseButton = () => {
     return (
       <button
