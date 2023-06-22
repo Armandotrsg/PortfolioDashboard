@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { DropImage } from "@/components/DropFile";
+import { DropFile } from "@/components/DropFile";
 import { resizeImage } from "@/utils/ResizeImage";
-import { ImagePreview } from "@/components/ImagePreview";
+import { FilePreview } from "@/components/FilePreview";
 import { Input } from "@/components/Input";
 
 export default function ImageUpload() {
@@ -34,25 +34,23 @@ export default function ImageUpload() {
       <form className="grid grid-cols-12">
         <div className="col-span-12 md:col-span-6">
           {/* Image placeholder */}
-          <DropImage fileTypes={fileTypes} handleChange={handleImageChange} />
+          <DropFile fileTypes={fileTypes} handleChange={handleImageChange} file={image} />
         </div>
         <div className="col-span-12 md:col-span-6">
           {/* Input section */}
           <div className="h-full">
-            <div className="grid grid-rows-5 h-full">
+            <div className="grid grid-rows-4 h-full">
               {/* Image preview */}
-              <div className="row-span-2 max-h-full">
-                <div className="flex flex-col md:flex-row space-x-3 justify-center items-center h-[90%] p-5 mt-5 border-2 border-dashed">
-                  {image ? (
-                    <ImagePreview
-                      image={image as Blob}
-                      imageName={imageName as string}
+              <div className="row-span-1 h-full p-3 mt-5">
+                <div className="flex flex-col md:flex-row h-full items-center">
+                  <label className="text-white font-semibold">Image: &nbsp;</label>
+                  {image && imageName ? (
+                    <FilePreview
+                      fileName={imageName}
                       handleRemove={handleRemoveImage}
                     />
                   ) : (
-                    <p className="text-center text-white p-3 italic">
-                      Image Preview
-                    </p>
+                    <p className="text-gray-200 italic">No image selected</p>
                   )}
                 </div>
               </div>

@@ -1,12 +1,9 @@
-import Image from "next/image";
-
 interface ImagePreviewProps {
-  image: Blob;
-  imageName: string;
+  fileName: string;
   handleRemove: () => void;
 }
 
-export const ImagePreview = ({ image, imageName, handleRemove }: ImagePreviewProps) => {
+export const FilePreview = ({ fileName, handleRemove }: ImagePreviewProps) => {
   const CloseButton = () => {
     return (
       <button
@@ -27,15 +24,8 @@ export const ImagePreview = ({ image, imageName, handleRemove }: ImagePreviewPro
   };
   return (
     <>
-      <Image
-        src={URL.createObjectURL(image)}
-        alt="preview"
-        className="object-cover rounded-lg shadow-lg w-fit h-28"
-        width={100}
-        height={100}
-      />
-      <div className="flex">
-        <p className="text-center text-white p-1">{imageName}</p>
+      <div className="flex space-x-1">
+        <p className="text-center text-gray-200">{fileName}</p>
         <CloseButton />
       </div>
     </>

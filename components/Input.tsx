@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface InputProps {
   label: string;
@@ -21,14 +21,14 @@ export const Input = ({
 }: InputProps) => {
   return (
     <div className="flex flex-col space-y-1">
-      <label htmlFor={name} className="text-white">
+      <label htmlFor={name} className="text-white font-semibold">
         {label}
       </label>
       <input
         type={type}
         name={name}
         id={name}
-        className="w-full bg-transparent p-3 border rounded-lg border-white text-white"
+        className="w-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
