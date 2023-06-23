@@ -6,11 +6,19 @@ import { FilePreview } from "@/components/FilePreview";
 import { Input } from "@/components/Input";
 import { storage } from "@/firebaseConfig";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-import { ProjectProps } from "../api/projects/route";
+import { ProjectProps } from "@/app/api/projects/[projects]/route";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function ImageUpload() {
+export interface UploadImageProps {
+    path: string;
+    isUrlRequired: boolean;
+}
+
+export default function UploadImage({
+    path,
+    isUrlRequired,
+}: UploadImageProps) {
   const fileTypes = ["JPG", "PNG", "JPEG"];
 
   const [title, setTitle] = useState("");
@@ -35,7 +43,7 @@ export default function ImageUpload() {
 
   async function uploadImage() {
     if (image) {
-      const storageRef = ref(storage, `projects/${imageName}`);
+      const storageRef = ref(storage, `${path}/${imageName}`);
       const snapshot = await uploadBytes(storageRef, image);
       console.log("Uploaded a blob or file!", snapshot);
       //Obtener la url de la imagen
@@ -52,10 +60,12 @@ export default function ImageUpload() {
       typeof description !== "string" ||
       !startDate ||
       (endDate && !(endDate instanceof Date)) ||
-      !urlRegex.test(url) ||
       !image
     ) {
-      return Promise.reject("Invalid data");
+      return Promise.reject("Fill all the fields");
+    }
+    if (isUrlRequired && !urlRegex.test(url)) {
+        return Promise.reject("Invalid url");
     }
     const imgUrl = await uploadImage();
     //Get the dates in format Month Year
@@ -77,12 +87,12 @@ export default function ImageUpload() {
     };
     const projectData: ProjectProps = {
       name: title,
-      url: url,
+      url: url === "" ? undefined : url,
       description: description,
       image: imgUrl!,
       dates: projectDates,
     };
-    const res = await fetch("/api/projects", {
+    const res = await fetch(`api/projects/${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -136,14 +146,14 @@ export default function ImageUpload() {
       required: true,
     },
     {
-      label: "url",
+      label: "URL",
       type: "url",
       name: "url",
       value: url,
       handleChange: (e: React.ChangeEvent<HTMLInputElement>) =>
         setUrl(e.target.value),
       placeholder: "The project's url",
-      required: true,
+      required: isUrlRequired,
     },
     {
       label: "Description",
@@ -185,10 +195,11 @@ export default function ImageUpload() {
   return (
     <section>
       <h1 className="text-4xl font-bold text-center text-white p-5">
-        Projects
+        {/* Make the path to title and replace '-' */}
+        {path[0].toUpperCase() + path.slice(1).replace("-", " ")}
       </h1>
       <h2 className="text-2xl font-bold text-center text-white">
-        Add a new project
+        {`Add a new ${path.replace("-", " ")}`}
       </h2>
       <form className="grid grid-cols-12">
         <div className="col-span-12 md:col-span-6">
