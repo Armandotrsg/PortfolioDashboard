@@ -1,20 +1,21 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { DropFile } from "@/components/DropFile";
 import { resizeImage } from "@/utils/ResizeImage";
 import { FilePreview } from "@/components/FilePreview";
 import { Input } from "@/components/Input";
 import { storage } from "@/firebaseConfig";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { ProjectProps } from "../api/projects/route";
 
 export default function ImageUpload() {
   const fileTypes = ["JPG", "PNG", "JPEG"];
 
   const [title, setTitle] = useState("");
-  const [link, setLink] = useState("");
+  const [url, setUrl] = useState("");
   const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [image, setImage] = useState<Blob | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
 
@@ -38,7 +39,42 @@ export default function ImageUpload() {
       //Obtener la url de la imagen
       const url = await getDownloadURL(snapshot.ref);
       console.log(url);
+      return url;
     }
+  }
+
+  async function handleSubmit() {
+    const imgUrl = await uploadImage();
+    //Get the dates in format Month Year
+    let start = startDate.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+    });
+    let end = endDate?.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+    });
+
+    const projectDates = {
+      start: `${start}`,
+      end: `${end}`,
+    };
+    const projectData: ProjectProps = {
+      name: title,
+      url: url,
+      description: description,
+      image: imgUrl!,
+      dates: projectDates,
+    };
+    const res = await fetch("/api/projects", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(projectData),
+    });
+    const data = await res.json();
+    console.log(data);
   }
 
   return (
@@ -61,7 +97,7 @@ export default function ImageUpload() {
         <div className="col-span-12 md:col-span-6">
           {/* Input section */}
           <div className="h-full">
-            <div className="grid grid-rows-5 h-full">
+            <div className="grid grid-rows-6">
               {/* Image preview */}
               <div className="row-span-1 h-full p-3 mt-5">
                 <div className="flex h-full items-center">
@@ -94,14 +130,14 @@ export default function ImageUpload() {
               </div>
               <div className="row-span-1 p-3">
                 <Input
-                  label={"Link"}
+                  label={"url"}
                   type={"url"}
-                  name={"link"}
-                  value={link}
+                  name={"url"}
+                  value={url}
                   handleChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setLink(e.target.value)
+                    setUrl(e.target.value)
                   }
-                  placeholder={"https://example.com"}
+                  placeholder={"The project's url"}
                   required={true}
                 />
               </div>
@@ -121,11 +157,18 @@ export default function ImageUpload() {
               <div className="row-span-1 p-3">
                 <div className="flex flex-col space-y-1">
                   <div className="flex">
-                    <label className="text-white font-semibold w-1/2">
+                    <label
+                      htmlFor="start"
+                      className="text-white font-semibold w-1/2"
+                    >
                       *Start date
                     </label>
-                    <label className="text-white font-semibold w-1/2">
-                      *End Date
+
+                    <label
+                      htmlFor="end"
+                      className="text-white font-semibold w-1/2"
+                    >
+                      *End date
                     </label>
                   </div>
                   <div className="flex space-x-2">
@@ -136,20 +179,42 @@ export default function ImageUpload() {
                       className="w-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
                       required
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setStartDate(e.target.value);
+                        setStartDate(new Date(e.target.value));
                       }}
                     />
                     <input
-                      type="date"
+                      type={endDate === undefined ? "text" : "date"}
                       name="end"
                       id="end"
-                      className="w-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
+                      className={`w-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500 ${
+                        endDate === undefined ? " border-gray-400" : ""
+                      }`}
                       required
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setEndDate(e.target.value);
+                        setEndDate(new Date(e.target.value));
                       }}
+                      disabled={endDate === undefined}
+                      placeholder="Currently working here"
                     />
                   </div>
+                </div>
+              </div>
+              <div className="row-span-1 p-3">
+                <div className="flex space-x-1 items-center">
+                  <input
+                    type="checkbox"
+                    name="current"
+                    id="current"
+                    className="bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setEndDate(
+                        endDate === undefined ? new Date() : undefined
+                      );
+                    }}
+                  />
+                  <label htmlFor="current" className="text-white font-semibold">
+                    Currently working here
+                  </label>
                 </div>
               </div>
             </div>
@@ -162,7 +227,7 @@ export default function ImageUpload() {
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
               onClick={async (e) => {
                 e.preventDefault();
-                await uploadImage();
+                await handleSubmit();
               }}
             >
               Submit

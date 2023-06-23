@@ -1,7 +1,5 @@
-"use client";
 import { FileUploader } from "react-drag-drop-files";
 import Image from "next/image";
-import { useState } from "react";
 
 export const DropFile = ({
   fileTypes,
@@ -12,7 +10,6 @@ export const DropFile = ({
   handleChange: (file: File) => void;
   file: Blob | null;
 }) => {
-  const [isHovering, setIsHovering] = useState(false);
   const DownloadImage = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -39,8 +36,6 @@ export const DropFile = ({
       >
         <div
           className={`p-5 md:w-96 md:h-96 rounded-xl flex flex-col justify-center items-center border-[6px] border-dashed border-indigo-50 cursor-pointer`}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
         >
           {!file ? (
             <DownloadImage />
@@ -59,7 +54,7 @@ export const DropFile = ({
             </p>
           ) : (
             <p className="text-white text-center pt-3">
-              {isHovering ? "Click to change file" : "File uploaded!"}
+              File uploaded!
             </p>
           )}
         </div>
