@@ -21,7 +21,7 @@ export const Input = ({
   required,
 }: InputProps) => {
   return (
-    <div className="flex flex-col space-y-1">
+    <div className="flex flex-col space-y-3">
       <label htmlFor={name} className="text-white font-semibold">
         {`${required ? "*": ""}${label}:`}
       </label>

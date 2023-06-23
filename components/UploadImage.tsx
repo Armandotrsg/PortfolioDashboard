@@ -8,6 +8,7 @@ import { storage } from "@/firebaseConfig";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { ProjectProps } from "@/app/api/projects/[projects]/route";
 import { toast, ToastContainer } from "react-toastify";
+import { urlRegex } from "@/utils/Regex";
 import "react-toastify/dist/ReactToastify.css";
 
 export interface UploadImageProps {
@@ -54,7 +55,6 @@ export default function UploadImage({
   }
 
   async function uploadProject() {
-    const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     if (
       typeof title !== "string" ||
       typeof description !== "string" ||
@@ -219,7 +219,7 @@ export default function UploadImage({
               <div className="row-span-1 h-full p-3 mt-5">
                 <div className="flex h-full items-center">
                   <label className="text-white font-semibold">
-                    *Image: &nbsp;
+                    *Image:
                   </label>
                   {image && imageName ? (
                     <FilePreview
