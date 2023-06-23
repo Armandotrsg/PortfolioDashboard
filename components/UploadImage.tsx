@@ -219,7 +219,7 @@ export default function UploadImage({
               <div className="row-span-1 h-full p-3 mt-5">
                 <div className="flex h-full items-center">
                   <label className="text-white font-semibold">
-                    *Image:
+                    *Image: &nbsp;
                   </label>
                   {image && imageName ? (
                     <FilePreview

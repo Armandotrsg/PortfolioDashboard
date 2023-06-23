@@ -24,8 +24,8 @@ export const FilePreview = ({ fileName, handleRemove }: ImagePreviewProps) => {
   };
   return (
     <>
-      <div className="flex items-start space-x-1 max-w-md">
-        <p className="text-center text-gray-200 truncate">&nbsp; {fileName}</p>
+      <div className="flex items-start space-x-1 max-w-sm">
+        <p className="text-center text-gray-200 truncate">{fileName}</p>
         <CloseButton />
       </div>
     </>

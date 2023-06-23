@@ -5,6 +5,9 @@ import { toast, ToastContainer } from "react-toastify";
 import { FilePreview } from "@/components/FilePreview";
 import { urlRegex } from "@/utils/Regex";
 import { Input } from "@/components/Input";
+import { storage } from "@/firebaseConfig";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { SkillsProps } from "../api/skills/route";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Skills() {
@@ -37,8 +40,8 @@ export default function Skills() {
     let blob = await fetch(url).then((r) => r.blob());
     // Catch errors
     if (!blob) {
-        toast.error(`Error fetching image`);
-        return;
+      toast.error(`Error fetching image`);
+      return;
     }
     setImage(blob);
     setImageName(url);
@@ -47,6 +50,67 @@ export default function Skills() {
   const handleFileTypeError = (fileType: string) => {
     toast.error(`File type not supported`);
   };
+
+  async function uploadImage() {
+    if (!urlRegex.test(imageName!) && image) {
+      const storageRef = ref(storage, `skills/${imageName}`);
+      const snapshot = await uploadBytes(storageRef, image);
+      console.log("Uploaded a blob or file!", snapshot);
+      //Obtener la url de la imagen
+      const url = await getDownloadURL(snapshot.ref);
+      console.log(url);
+      return url;
+    } else {
+      console.log("Image is a link");
+      return imageName;
+    }
+  }
+
+  async function uploadProject() {
+    if (!name) {
+      return Promise.reject("Please add a name");
+    } else if (!image) {
+      return Promise.reject("Please add an image");
+    }
+    const url = await uploadImage();
+    const params: SkillsProps = {
+      name: name,
+      img: url!,
+    };
+    const res = await fetch("/api/skills", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    });
+    const data = await res.json();
+    console.log(data);
+    if (!data.success) {
+      return Promise.reject(data.message);
+    } else {
+      console.log(data.message);
+      return Promise.resolve(data.message);
+    }
+  }
+
+  async function handleSubmit() {
+    toast.promise(uploadProject(), {
+      pending: "Submitting...",
+      success: {
+        render: ({ data }) => {
+          //Clear the form after the correct submission
+          setName("");
+          setImage(null);
+          setImageName(null);
+          return `${data}`;
+        },
+      },
+      error: {
+        render: ({ data }) => `${data}`,
+      },
+    });
+  }
 
   return (
     <section>
@@ -62,13 +126,14 @@ export default function Skills() {
             fileTypes={fileTypes}
             onTypeError={handleFileTypeError}
           />
-          <ToastContainer autoClose={3000} />
         </div>
         <div className="col-span-12 sm:col-span-6">
           <div className="grid grid-rows-3 gap-y-4  p-3 mt-5">
             <div className="row-span-1 p-3">
               <div
-                className={`flex h-full ${!image ? "flex-col space-y-3" : "items-center"}`}
+                className={`flex h-full ${
+                  !image ? "flex-col space-y-3" : "items-center"
+                }`}
               >
                 <label className="text-white font-semibold">
                   *Image: &nbsp;
@@ -98,25 +163,30 @@ export default function Skills() {
               </div>
             </div>
             <div className="row-span-1 p-3">
-                <Input
-                    label="Skill Name"
-                    type="text"
-                    name="name"
-                    value={name}
-                    handleChange={(e) => setName(e.target.value)}
-                    placeholder="Enter skill name"
-                    required
-                />
+              <Input
+                label="Skill Name"
+                type="text"
+                name="name"
+                value={name}
+                handleChange={(e) => setName(e.target.value)}
+                placeholder="Enter skill name"
+                required
+              />
             </div>
             <div className="row-span-1 p-3">
-                <div className="flex justify-center">
-                    <button
-                        type="submit"
-                        className="bg-midnight-700 text-sm transition-all hover:bg-midnight-800 text-white py-2 px-4 rounded"
-                    >
-                        Add Skill
-                    </button>
-                </div>
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  className="bg-midnight-700 text-sm transition-all hover:bg-midnight-800 text-white py-2 px-4 rounded"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    handleSubmit();
+                  }}
+                >
+                  Submit
+                </button>
+                <ToastContainer autoClose={3000} />
+              </div>
             </div>
           </div>
         </div>
