@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { DropFile } from "@/components/DropFile";
 import { resizeImage } from "@/utils/ResizeImage";
 import { FilePreview } from "@/components/FilePreview";
@@ -107,8 +107,8 @@ export default function ImageUpload() {
         setDescription(e.target.value),
       placeholder: "A brief description of the project",
       required: true,
-    }
-  ]
+    },
+  ];
 
   const dateFields = [
     {
@@ -120,11 +120,11 @@ export default function ImageUpload() {
         setStartDate(new Date(e.target.value)),
       placeholder: "The project's start date",
       required: true,
-      disabled: () => false
+      disabled: () => false,
     },
     {
       label: "End date",
-      type: () => endDate === undefined ? "text" : "date",
+      type: () => (endDate === undefined ? "text" : "date"),
       name: "end",
       value: endDate,
       handleChange: (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -132,8 +132,71 @@ export default function ImageUpload() {
       placeholder: "Currenly working here",
       required: false,
       disabled: () => endDate === undefined,
-    }
-  ]
+    },
+  ];
+
+  const InputFields = () => (
+    <>
+      {/* Input fields */}
+      {inputFields.map((input, index) => (
+        <div className="row-span-1 p-3" key={index}>
+          <Input
+            label={input.label}
+            type={input.type}
+            name={input.name}
+            value={input.value}
+            handleChange={input.handleChange}
+            placeholder={input.placeholder}
+            required={input.required}
+          />
+        </div>
+      ))}
+      {/* Dates */}
+      <div className="row-span-1 p-3">
+        <div className="grid grid-cols-2 gap-x-5">
+          {dateFields.map((date, index) => (
+            <div className="col-span-1" key={index}>
+              <div className="flex flex-col h-full space-y-1">
+                <label htmlFor={date.name} className="text-white font-semibold">
+                  {date.label}
+                </label>
+                <input
+                  type={date.type()}
+                  name={date.name}
+                  id={date.name}
+                  className={`w-full h-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500 ${
+                    date.disabled() ? " border-gray-500" : ""
+                  }`}
+                  required={date.required}
+                  onChange={date.handleChange}
+                  disabled={date.disabled()}
+                  placeholder={date.placeholder}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Current Date */}
+      <div className="row-span-1 p-3">
+        <div className="flex space-x-1 items-center">
+          <input
+            type="checkbox"
+            name="current"
+            id="current"
+            className="bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setEndDate(endDate === undefined ? new Date() : undefined);
+            }}
+            checked={endDate === undefined}
+          />
+          <label htmlFor="current" className="text-white font-semibold">
+            Currently working here
+          </label>
+        </div>
+      </div>
+    </>
+  );
 
   return (
     <section>
@@ -173,69 +236,7 @@ export default function ImageUpload() {
                 </div>
               </div>
               {/* Input fields */}
-              {inputFields.map((input, index) => (
-                <div className="row-span-1 p-3" key={index}>
-                  <Input
-                    label={input.label}
-                    type={input.type}
-                    name={input.name}
-                    value={input.value}
-                    handleChange={input.handleChange}
-                    placeholder={input.placeholder}
-                    required={input.required}
-                  />
-                </div>
-              ))}
-              {/* Dates */}
-              <div className="row-span-1 p-3">
-                <div className="grid grid-cols-2 gap-x-5">
-                  {
-                    dateFields.map((date, index) => (
-                      <div className="col-span-1" key={index}>
-                        <div className="flex flex-col h-full space-y-1">
-                          <label
-                            htmlFor={date.name}
-                            className="text-white font-semibold">
-                            {date.label}
-                            </label>
-                          <input
-                            type={date.type()}
-                            name={date.name}
-                            id={date.name}
-                            className={`w-full h-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500 ${
-                              date.disabled() ? " border-gray-500" : ""
-                            }`}
-                            required={date.required}
-                            onChange={date.handleChange}
-                            disabled={date.disabled()}
-                            placeholder={date.placeholder}
-                          />
-                        </div>
-
-                      </div>
-                    ))
-                  }
-                </div>
-              </div>
-              {/* Current Date */}
-              <div className="row-span-1 p-3">
-                <div className="flex space-x-1 items-center">
-                  <input
-                    type="checkbox"
-                    name="current"
-                    id="current"
-                    className="bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setEndDate(
-                        endDate === undefined ? new Date() : undefined
-                      );
-                    }}
-                  />
-                  <label htmlFor="current" className="text-white font-semibold">
-                    Currently working here
-                  </label>
-                </div>
-              </div>
+              <InputFields />
             </div>
           </div>
         </div>
