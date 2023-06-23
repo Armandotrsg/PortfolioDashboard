@@ -52,9 +52,14 @@ export const DropFile = ({
             />
           )}
           {!file ? (
-            <p className={`text-white text-center`}>
-              Drag and drop your file here
-            </p>
+            <>
+              <p className={`text-white text-center`}>
+                Drag and drop your file here
+              </p>
+              <p className={`text-gray-400 text-center`}>
+                {`${fileTypes.join(", ")}`}
+              </p>
+            </>
           ) : (
             <p className="text-white text-center pt-3">
               File uploaded!
