@@ -28,11 +28,20 @@ export async function POST(req: APIRequest) {
       .replace(/[^a-zA-Z0-9]/g, "-")
       .toLowerCase();
     await setDoc(doc(db, "projects", name), params);
-    return new Response(JSON.stringify(params), {
+    console.log("Project created", params);
+    return new Response(JSON.stringify({
+        success: true,
+        message: "Project created",
+    }), {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error(error);
-    return new Response("Internal server error", { status: 500 });
+    return new Response(JSON.stringify({
+        success: false,
+        message: "Failed to create project",
+    }), {
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }

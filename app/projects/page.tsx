@@ -7,6 +7,8 @@ import { Input } from "@/components/Input";
 import { storage } from "@/firebaseConfig";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { ProjectProps } from "../api/projects/route";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ImageUpload() {
   const fileTypes = ["JPG", "PNG", "JPEG"];
@@ -43,9 +45,21 @@ export default function ImageUpload() {
     }
   }
 
-  async function handleSubmit() {
+  async function uploadProject() {
+    const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    if (
+      typeof title !== "string" ||
+      typeof description !== "string" ||
+      !startDate ||
+      (endDate && !(endDate instanceof Date)) ||
+      !urlRegex.test(url) ||
+      !image
+    ) {
+      return Promise.reject("Invalid data");
+    }
     const imgUrl = await uploadImage();
     //Get the dates in format Month Year
+
     let start = startDate.toLocaleDateString("en-US", {
       month: "long",
       year: "numeric",
@@ -54,6 +68,8 @@ export default function ImageUpload() {
       month: "long",
       year: "numeric",
     });
+
+    console.log(start, end);
 
     const projectDates = {
       start: `${start}`,
@@ -75,6 +91,37 @@ export default function ImageUpload() {
     });
     const data = await res.json();
     console.log(data);
+    if (!data.success) {
+      return Promise.reject(data.message);
+    } else {
+      return Promise.resolve(data.message);
+    }
+  }
+
+  async function handleSubmit() {
+    toast.promise(uploadProject(), {
+      pending: "Submitting...",
+      success: {
+        render: ({ data }) => {
+          //Clear the form after the correct submission
+          setTitle("");
+          setUrl("");
+          setDescription("");
+          setStartDate(new Date());
+          setEndDate(new Date());
+          setImage(null);
+          setImageName(null);
+          return `${data}`;
+        },
+      },
+      error: {
+        render: ({ data }) => `${data}`,
+      },
+    });
+  }
+
+  const handleFileTypeError = (fileType: string) => {
+    toast.error(`File type not supported`);
   }
 
   const inputFields = [
@@ -135,69 +182,6 @@ export default function ImageUpload() {
     },
   ];
 
-  const InputFields = () => (
-    <>
-      {/* Input fields */}
-      {inputFields.map((input, index) => (
-        <div className="row-span-1 p-3" key={index}>
-          <Input
-            label={input.label}
-            type={input.type}
-            name={input.name}
-            value={input.value}
-            handleChange={input.handleChange}
-            placeholder={input.placeholder}
-            required={input.required}
-          />
-        </div>
-      ))}
-      {/* Dates */}
-      <div className="row-span-1 p-3">
-        <div className="grid grid-cols-2 gap-x-5">
-          {dateFields.map((date, index) => (
-            <div className="col-span-1" key={index}>
-              <div className="flex flex-col h-full space-y-1">
-                <label htmlFor={date.name} className="text-white font-semibold">
-                  {date.label}
-                </label>
-                <input
-                  type={date.type()}
-                  name={date.name}
-                  id={date.name}
-                  className={`w-full h-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500 ${
-                    date.disabled() ? " border-gray-500" : ""
-                  }`}
-                  required={date.required}
-                  onChange={date.handleChange}
-                  disabled={date.disabled()}
-                  placeholder={date.placeholder}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* Current Date */}
-      <div className="row-span-1 p-3">
-        <div className="flex space-x-1 items-center">
-          <input
-            type="checkbox"
-            name="current"
-            id="current"
-            className="bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setEndDate(endDate === undefined ? new Date() : undefined);
-            }}
-            checked={endDate === undefined}
-          />
-          <label htmlFor="current" className="text-white font-semibold">
-            Currently working here
-          </label>
-        </div>
-      </div>
-    </>
-  );
-
   return (
     <section>
       <h1 className="text-4xl font-bold text-center text-white p-5">
@@ -213,6 +197,7 @@ export default function ImageUpload() {
             fileTypes={fileTypes}
             handleChange={handleImageChange}
             file={image}
+            onTypeError={handleFileTypeError}
           />
         </div>
         <div className="col-span-12 md:col-span-6">
@@ -236,7 +221,81 @@ export default function ImageUpload() {
                 </div>
               </div>
               {/* Input fields */}
-              <InputFields />
+              <>
+                {/* Input fields */}
+                {inputFields.map((input, index) => (
+                  <div className="row-span-1 p-3" key={index}>
+                    <Input
+                      label={input.label}
+                      type={input.type}
+                      name={input.name}
+                      value={input.value}
+                      handleChange={input.handleChange}
+                      placeholder={input.placeholder}
+                      required={input.required}
+                    />
+                  </div>
+                ))}
+                {/* Dates */}
+                <div className="row-span-1 p-3">
+                  <div className="grid grid-cols-2 gap-x-5">
+                    {dateFields.map((date, index) => (
+                      <div className="col-span-1" key={index}>
+                        <div className="flex flex-col h-full space-y-1">
+                          <label
+                            htmlFor={date.name}
+                            className="text-white font-semibold"
+                          >
+                            {`${date.required ? "*" : ""}${date.label}:`}
+                          </label>
+                          <input
+                            type={date.type()}
+                            name={date.name}
+                            id={date.name}
+                            className={`w-full h-full bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500 ${
+                              date.disabled() ? " border-gray-500" : ""
+                            }`}
+                            required={date.required}
+                            onChange={date.handleChange}
+                            disabled={date.disabled()}
+                            placeholder={date.placeholder}
+                            value={
+                              date.value === undefined
+                                ? ""
+                                : date.value instanceof Date
+                                ? date.value.toISOString().split("T")[0]
+                                : date.value
+                            }
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Current Date */}
+                <div className="row-span-1 p-3">
+                  <div className="flex space-x-1 items-center">
+                    <input
+                      type="checkbox"
+                      name="current"
+                      id="current"
+                      className="bg-transparent p-3 border rounded-lg border-white text-white focus:border-blue-500"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setEndDate(
+                          endDate === undefined ? new Date() : undefined
+                        );
+                      }}
+                      checked={endDate === undefined}
+                    />
+                    <label
+                      htmlFor="current"
+                      className="text-white font-semibold"
+                    >
+                      Currently working here
+                    </label>
+                  </div>
+                </div>
+              </>
             </div>
           </div>
         </div>
@@ -247,11 +306,12 @@ export default function ImageUpload() {
               className="bg-blue-500 transition-all hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
               onClick={async (e) => {
                 e.preventDefault();
-                await handleSubmit();
+                handleSubmit();
               }}
             >
               Submit
             </button>
+            <ToastContainer autoClose={3000} />
           </div>
         </div>
       </form>

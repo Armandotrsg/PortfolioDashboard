@@ -5,10 +5,12 @@ export const DropFile = ({
   fileTypes,
   handleChange,
   file,
+  onTypeError,
 }: {
   fileTypes: String[];
   handleChange: (file: File) => void;
   file: Blob | null;
+  onTypeError: (fileType: string) => void;
 }) => {
   const DownloadImage = () => (
     <svg
@@ -33,6 +35,7 @@ export const DropFile = ({
         name="file"
         types={fileTypes}
         multiple={false}
+        onTypeError={onTypeError}
       >
         <div
           className={`p-5 md:w-96 md:h-96 rounded-xl flex flex-col justify-center items-center border-[6px] border-dashed border-indigo-50 cursor-pointer`}
