@@ -11,7 +11,7 @@ import { SkillsProps } from "../api/skills/route";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Skills() {
-  const fileTypes = ["JPG", "PNG", "JPEG"];
+  const fileTypes = ["JPG", "PNG", "JPEG", "SVG"];
   const [image, setImage] = useState<Blob | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
