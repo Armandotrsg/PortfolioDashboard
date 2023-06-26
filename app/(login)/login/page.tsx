@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Cookies } from "react-cookie";
 
 export default function LogIn() {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const router = useRouter();
+  const cookies = new Cookies();
 
   async function validatePassword() {
     const res = await fetch("api/auth", {
@@ -19,6 +21,7 @@ export default function LogIn() {
     if (!resJson.success) {
       setError("Incorrect password");
     } else {
+        cookies.set("auth", true, { path: "/" });
         router.push("/");
     }
   }
