@@ -34,7 +34,7 @@ export const DropFile = ({
       width="16"
       height="16"
       fill="currentColor"
-      className="w-52 h-52 text-green-700"
+      className="w-44 h-44 p-5 text-green-700"
       viewBox="0 0 16 16"
     >
       <path d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
