@@ -9,33 +9,40 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Personal() {
+async function getAboutMe() {
   const res = await fetch("http://localhost:3000/api/personal/about-me", {
     next: {
-      revalidate: 1,
+      revalidate: 0,
     },
   });
-  const resJson = await res.json();
+  return res.json();
+}
 
+async function getResume() {
   const prevPdfRes = await fetch("http://localhost:3000/api/personal/resume", {
     next: {
-      revalidate: 1,
+      revalidate: 0,
     },
   });
+  return prevPdfRes.json();
+}
 
-  const prevPdfResJson = await prevPdfRes.json();
+export default async function Personal() {
+  const aboutmeData = getAboutMe();
+  const resumeData = getResume();
 
+  const [aboutme, resume] = await Promise.all([aboutmeData, resumeData]);
   return (
     <>
       <AboutMe
         {...{
-          previousImageUrl: resJson.data.image,
-          previousText: resJson.data.text,
+          previousImageUrl: aboutme.data.image,
+          previousText: aboutme.data.text,
         }}
       />
       <Resume
         {...{
-          prevResume: prevPdfResJson.data,
+          prevResume: resume.data,
         }}
       />
     </>
