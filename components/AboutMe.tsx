@@ -47,6 +47,8 @@ export default function AboutMe({
       //Obtener la url de la imagen
       const url = await getDownloadURL(snapshot.ref);
       return url;
+    } else if (imageName === null) {
+      return Promise.reject("Image is required");
     }
     return imageName;
   }
@@ -60,8 +62,6 @@ export default function AboutMe({
       return Promise.reject("Text is required");
     } else if (newText === text && url === imageName) {
       return Promise.reject("No changes detected");
-    } else if (!image || !imageName) {
-      return Promise.reject("Invalid image");
     }
     const res = await fetch("/api/personal/about-me", {
       method: "PUT",
@@ -94,7 +94,7 @@ export default function AboutMe({
       },
       error: {
         render: ({ data }: any) => {
-          return data.message;
+          return data.message === undefined ? data : data.message;
         },
       },
     });
