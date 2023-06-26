@@ -1,5 +1,4 @@
-import UploadImage from "@/components/UploadImage";
-import { UploadImageProps } from "@/components/UploadImage";
+import UploadImage, { UploadImageProps } from "@/components/UploadImage";
 import { Metadata } from "next";
 
 export async function generateMetadata({
