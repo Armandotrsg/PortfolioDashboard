@@ -1,9 +1,9 @@
-import AboutMe, { AboutMeProps }  from "@/components/AboutMe"
+import AboutMe from "@/components/AboutMe"
 
 export default async function Personal() {
   const res = await fetch("http://localhost:3000/api/personal/about-me", {
     next: {
-      revalidate: 10,
+      revalidate: 0,
     }
   });
   const resJson = await res.json();

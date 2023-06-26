@@ -94,7 +94,7 @@ export default function Skills() {
     }
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
     toast.promise(uploadProject(), {
       pending: "Submitting...",
       success: {
