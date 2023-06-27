@@ -1,5 +1,6 @@
 import { db } from "@/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
+import { NextResponse, NextRequest } from "next/server";
 
 interface Dates {
     start: string;
@@ -14,7 +15,7 @@ export interface ProjectProps {
   dates: Dates;
 }
 
-interface APIRequest extends Request {
+interface APIRequest extends NextRequest {
     json(): Promise<ProjectProps>;
 }
 
@@ -27,19 +28,12 @@ export async function POST(req: APIRequest,  {params}: {params: { projects: "pro
       .toLowerCase();
     await setDoc(doc(db, path, name), props);
     console.log(`${path[0].toUpperCase() + path.slice(1).replace("-", " ")} created`, props);
-    return new Response(JSON.stringify({
-        success: true,
-        message: `${path[0].toUpperCase() + path.slice(1).replace("-", " ")} created`,
-    }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({
+      success: true,
+      message: `${path[0].toUpperCase() + path.slice(1).replace("-", " ")} created`,
+    })
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify({
-        success: false,
-        message: `Failed to create ${path.replace("-", " ")}`,
-    }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.error();
   }
 }

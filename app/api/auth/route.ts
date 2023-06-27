@@ -1,6 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
 
-export async function POST(req: NextRequest) {
+interface APIRequest extends NextRequest {
+    json(): Promise<{password: string}>;
+}
+
+export async function POST(req: APIRequest) {
     const {password} = await req.json();
 
     const validPassword = process.env.PASSWORD;

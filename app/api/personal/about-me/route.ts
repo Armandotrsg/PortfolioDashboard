@@ -1,6 +1,10 @@
 import { db } from "@/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
+
+interface APIRequest extends NextRequest {
+  json(): Promise<{text: string; image: string}>;
+}
 
 export async function GET() {
   const docRef = doc(db, "about-me", "about-me");
@@ -19,7 +23,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: APIRequest) {
   const body = await request.json();
   const docRef = doc(db, "about-me", "about-me");
   const docSnap = await getDoc(docRef);

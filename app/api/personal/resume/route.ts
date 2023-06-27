@@ -1,17 +1,18 @@
 import { storage } from "@/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
+import { NextResponse } from "next/server";
 
 export async function GET() {
-  const storageRef = ref(storage, `pdf/Armando_Terrazas_Resume.pdf`);
-  const url = await getDownloadURL(storageRef);
-  return new Response(
-    JSON.stringify({
+  try {
+    const storageRef = ref(storage, `pdf/Armando_Terrazas_Resume.pdf`);
+    const url = await getDownloadURL(storageRef);
+    return NextResponse.json({
       success: true,
-      message: `CV found`,
+      message: `Resume found`,
       data: url,
-    }),
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+    });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.error();
+  }
 }
