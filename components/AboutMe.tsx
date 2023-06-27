@@ -87,8 +87,8 @@ export default function AboutMe({
       pending: "Updating about me...",
       success: {
         render: ({ data }) => {
-          setText(data.text);
-          setImageName(data.image);
+          setText(data.data.text);
+          setImageName(data.data.image);
           return "About me updated!";
         },
       },
