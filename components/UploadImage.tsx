@@ -20,7 +20,7 @@ export default function UploadImage({
     path,
     isUrlRequired,
 }: UploadImageProps) {
-  const fileTypes = ["JPG", "PNG", "JPEG"];
+  const fileTypes = ["JPG", "PNG", "JPEG", "WEBP", "AVIF"];
 
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
