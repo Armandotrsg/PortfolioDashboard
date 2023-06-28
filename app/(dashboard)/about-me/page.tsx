@@ -3,6 +3,8 @@ import Resume from "@/components/Resume";
 import { Metadata } from "next";
 import { ApiRoute } from "@/utils/ApiRoute";
 
+export const revalidate = 20;
+
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `About Me Upload`,
@@ -11,20 +13,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 async function getAboutMe() {
-  const res = await fetch(`${ApiRoute()}/api/personal/about-me`, {
-    next: {
-      revalidate: 0,
-    },
-  });
+  const res = await fetch(`${ApiRoute()}/api/personal/about-me`);
   return res.json();
 }
 
 async function getResume() {
-  const prevPdfRes = await fetch(`${ApiRoute()}/api/personal/resume`, {
-    next: {
-      revalidate: 0,
-    },
-  });
+  const prevPdfRes = await fetch(`${ApiRoute()}/api/personal/resume`);
   return prevPdfRes.json();
 }
 
