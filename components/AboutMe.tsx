@@ -18,7 +18,7 @@ export default function AboutMe({
   previousImageUrl,
   previousText,
 }: AboutMeProps) {
-  const fileTypes = ["JPG", "PNG", "JPEG"];
+  const fileTypes = ["JPG", "PNG", "JPEG", "WEBP", "AVIF"];
   const [image, setImage] = useState<Blob | null>(null);
   const [imageName, setImageName] = useState<string | null>(previousImageUrl);
   const [text, setText] = useState<string>(previousText);
