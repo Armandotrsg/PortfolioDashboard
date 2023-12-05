@@ -1,13 +1,15 @@
 "use client";
 import { DropFile } from "@/components/DropFile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
 import { FilePreview } from "@/components/FilePreview";
-import { storage } from "@/firebaseConfig";
+import { auth, storage } from "@/firebaseConfig";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import "react-toastify/dist/ReactToastify.css";
 import { urlRegex } from "@/utils/Regex";
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 export interface AboutMeProps {
   previousImageUrl: string;
@@ -22,6 +24,15 @@ export default function AboutMe({
   const [image, setImage] = useState<Blob | null>(null);
   const [imageName, setImageName] = useState<string | null>(previousImageUrl);
   const [text, setText] = useState<string>(previousText);
+  const router = useRouter();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.replace("/login");
+      }
+    });
+  }, [router])
 
   const handleRemoveImage = () => {
     setImageName(null);

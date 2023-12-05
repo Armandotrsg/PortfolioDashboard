@@ -1,6 +1,19 @@
+"use client";
+import { auth } from "@/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Hero() {
+  const router = useRouter();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.replace("/login");
+      }
+    });
+  }, [router])
   return (
     <section className="text-white">
       <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-[100%] lg:items-center">

@@ -1,15 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DropFile } from "@/components/DropFile";
 import { resizeImage } from "@/utils/ResizeImage";
 import { FilePreview } from "@/components/FilePreview";
 import { Input } from "@/components/Input";
-import { storage } from "@/firebaseConfig";
+import { auth, storage } from "@/firebaseConfig";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { ProjectProps } from "@/app/api/projects/[projects]/route";
 import { toast, ToastContainer } from "react-toastify";
 import { urlRegex } from "@/utils/Regex";
 import "react-toastify/dist/ReactToastify.css";
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 export interface UploadImageProps {
     path: string;
@@ -29,6 +31,15 @@ export default function UploadImage({
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [image, setImage] = useState<Blob | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.replace("/login");
+      }
+    });
+  }, [router])
 
   const handleRemoveImage = () => {
     setImageName(null);
