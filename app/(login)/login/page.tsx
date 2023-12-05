@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/firebaseConfig";
@@ -34,13 +34,13 @@ export default function LogIn() {
     }
   }
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      router.push("/");
-    } else {
-      redirect("/login");
-    }
-  });
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.replace("/");
+      }
+    });
+  }, [router])
 
   return (
     <section className="h-[90vh] grid place-content-center">

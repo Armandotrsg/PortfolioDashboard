@@ -1,20 +1,31 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DropFile } from "@/components/DropFile";
 import { toast, ToastContainer } from "react-toastify";
 import { FilePreview } from "@/components/FilePreview";
 import { urlRegex } from "@/utils/Regex";
 import { Input } from "@/components/Input";
-import { storage } from "@/firebaseConfig";
+import { auth, storage } from "@/firebaseConfig";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { SkillsProps } from "../app/api/skills/route";
 import "react-toastify/dist/ReactToastify.css";
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 export default function Skills() {
   const fileTypes = ["JPG", "PNG", "JPEG", "SVG", "WEBP", "AVIF"];
   const [image, setImage] = useState<Blob | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
+  const router = useRouter();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.replace("/login");
+      }
+    });
+  }, [router])
 
   const handleRemoveImage = () => {
     setImageName(null);

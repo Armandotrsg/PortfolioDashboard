@@ -1,9 +1,6 @@
 import "../globals.css";
 import { Inter } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
-import { redirect } from "next/navigation";
-import { auth } from "@/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,12 +9,6 @@ export const metadata = {
   description:
     "Start now to add your personal information and your projects to your portfolio.",
 };
-
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    redirect("/login");
-  }
-});
 
 export default function RootLayout({
   children,
